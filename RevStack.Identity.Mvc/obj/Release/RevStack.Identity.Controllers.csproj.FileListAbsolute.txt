@@ -1,0 +1,1 @@
+\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Controllers\RevStack.Identity.Controllers\obj\Release\RevStack.Identity.Controllers.csprojResolveAssemblyReference.cache

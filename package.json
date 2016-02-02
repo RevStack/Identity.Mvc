@@ -1,0 +1,15 @@
+{
+  "name": "RevStack.Identity.Mvc",
+  "version": "0.9.1",
+  "description": "Asp.Net class library project implementation of RevStack.Identity",
+  "main": "RevStack.Identity.Mvc.sln",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RevStack/Identity.git"
+  },
+  "author": "S. Francis",
+  "license": "MIT"
+}
