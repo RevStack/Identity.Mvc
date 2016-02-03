@@ -74,9 +74,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\RevStack.Identity\RevStack.Identity\bin\Debug\RevStack.Identity.dll</HintPath>
     </Reference>
-    <Reference Include="RevStack.Identity.Models">
-      <HintPath>..\..\RevStack.Identity.Models\RevStack.Identity.Models\bin\Release\RevStack.Identity.Models.dll</HintPath>
-    </Reference>
     <Reference Include="RevStack.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\RevStack.Mvc\bin\Release\RevStack.Mvc.dll</HintPath>

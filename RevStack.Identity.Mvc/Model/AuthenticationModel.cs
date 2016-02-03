@@ -6,11 +6,13 @@ namespace RevStack.Identity.Mvc
     public interface IAuthenticationModel : IEntity<string>
     {
         bool SignedIn { get; set; }
+        string Email { get; set; }
     }
 
     public class AuthenticationModel : IAuthenticationModel
     {
         public string Id { get; set; }
         public bool SignedIn { get; set; }
+        public string Email { get; set; }
     }
 }

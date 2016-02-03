@@ -431,6 +431,28 @@ namespace RevStack.Identity.Mvc
             return Content(HttpStatusCode.OK, true);
         }
 
+        [Route("AuthenticationModel")]
+        [AllowAnonymous]
+        public virtual async Task<IHttpActionResult> Authentication()
+        {
+            var model = new AuthenticationModel
+            {
+                Id=Guid.NewGuid().ToString(),
+                SignedIn=false,
+                Email=null
+            };
+            if (User.Identity.IsAuthenticated)
+            {
+                var userName = User.Identity.GetUserName();
+                var userManager = _userManagerFactory();
+                var user = await userManager.FindByEmailAsync(userName);
+                model.SignedIn = true;
+                model.Email = user.Email;
+            }
+
+            return Content(HttpStatusCode.OK, model);
+        }
+
         /// <summary>
         /// 
         /// </summary>
