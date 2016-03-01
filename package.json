@@ -1,6 +1,6 @@
 {
   "name": "RevStack.Identity.Mvc",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Asp.Net class library project implementation of RevStack.Identity",
   "main": "RevStack.Identity.Mvc.sln",
   "scripts": {

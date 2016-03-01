@@ -22,7 +22,7 @@ namespace RevStack.Identity.Mvc
             throw new NotImplementedException();
         }
 
-        public Task SendAsync(IdentityMessage message, string recipientAddress)
+        public Task SendAsync(IdentityMessage message, string senderAddress)
         {
             throw new NotImplementedException();
         }
