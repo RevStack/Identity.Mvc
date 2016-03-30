@@ -8,7 +8,7 @@ namespace RevStack.Identity.Mvc
         string FirstName { get; set; }
         string LastName { get; set; }
         string Email { get; set; }
-        string Address { get; set; }
+        string Street { get; set; }
         string City { get; set; }
         string State { get; set; }
         string ZipCode { get; set; }
