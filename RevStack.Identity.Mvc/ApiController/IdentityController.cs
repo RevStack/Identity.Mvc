@@ -533,7 +533,7 @@ namespace RevStack.Identity.Mvc
                     identityResponse.Message = "Invalid Login Account";
                     identityResponse.StatusCode = HttpStatusCode.Unauthorized;
                     identityResponse.Entity = model;
-                    return Content(HttpStatusCode.Unauthorized, identityResponse);
+                    return Content(HttpStatusCode.Forbidden, identityResponse);
             }
         }
 

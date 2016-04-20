@@ -43,5 +43,19 @@ namespace RevStack.Identity.Mvc
             Smtp.SendMail(message.Destination,sender, message.Subject, message.Body, false, _host, credentials);
             return Task.FromResult(0);
         }
+
+        public Task SendAsync(IdentityMessage message, bool isHTML)
+        {
+            var credentials = new NetworkCredential(_user, _password);
+            Smtp.SendMail(message.Destination, _from, message.Subject, message.Body, isHTML, _host, credentials);
+            return Task.FromResult(0);
+        }
+
+        public Task SendAsync(IdentityMessage message, string sender, bool isHTML)
+        {
+            var credentials = new NetworkCredential(_user, _password);
+            Smtp.SendMail(message.Destination, sender, message.Subject, message.Body, isHTML, _host, credentials);
+            return Task.FromResult(0);
+        }
     }
 }
