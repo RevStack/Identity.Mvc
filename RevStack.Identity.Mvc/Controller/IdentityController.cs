@@ -909,7 +909,7 @@ namespace RevStack.Identity.Mvc
         [NonAction]
         protected ActionResult ResetPassword_Get(string code)
         {
-            return code == null ? View(ERROR_VIEW) : View(RESET_PASSWORD_VIEW);
+            return code == null ? View(ERROR_VIEW) : View(RESET_PASSWORD_VIEW, new ResetPasswordModel { Code = code });
         }
 
         /// <summary>
