@@ -36,6 +36,15 @@ namespace RevStack.Identity.Mvc
         }
     }
 
+    public class IdentityUserModel
+    {
+        public string Id { get; set; }
+        public bool Authenticated { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public List<string> Roles { get; set; }
+    }
+
     public class ManageLoginsModel
     {
         public IList<UserLoginInfo> CurrentLogins { get; set; }
