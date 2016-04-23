@@ -8,6 +8,12 @@ namespace RevStack.Identity.Mvc
         public HttpStatusCode StatusCode { get; set; }
         public string Message { get; set; }
         public T Entity { get; set; }
-        public string ReturnUrl { get; set; }
+        public string Location { get; set; }
+    }
+    public class IdentityResponse
+    {
+        public HttpStatusCode StatusCode { get; set; }
+        public string Message { get; set; }
+        public string Location { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.SetPassword.Success"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Your password has been set.";
             }
         }

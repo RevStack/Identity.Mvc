@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Manage.Error"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "An error has occurred.";
             }
         }

@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.RemoveLogin.Success"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "The social media login has been removed.";
             }
         }

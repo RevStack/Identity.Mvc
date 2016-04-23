@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Web.Mvc;
+
 using Microsoft.Owin.Security;
 
 namespace RevStack.Identity.Mvc
@@ -38,4 +39,5 @@ namespace RevStack.Identity.Mvc
 
         }
     }
+
 }

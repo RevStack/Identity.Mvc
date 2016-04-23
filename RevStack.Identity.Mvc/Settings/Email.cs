@@ -5,49 +5,22 @@ namespace RevStack.Identity.Mvc.Settings
 {
     public static class Email
     {
-        public static bool EnableConfirmation
+        public static string NewLine
         {
             get
             {
-                var result = ConfigurationManager.AppSettings["Identity.Email.EnableConfirmation"];
-                if (result != null) return Convert.ToBoolean(result);
-                return false;
+                var result = ConfigurationManager.AppSettings["Identity.Email.NewLine"];
+                if (!string.IsNullOrEmpty(result)) return "<br>";
+                return Environment.NewLine;
             }
         }
-        public static string Subject
+        public static string Duplicate
         {
             get
             {
-                var result = ConfigurationManager.AppSettings["Identity.Email.Subject"];
-                if (result != null) return result;
-                return "Confirm your account";
-            }
-        }
-        public static string Body
-        {
-            get
-            {
-                var result = ConfigurationManager.AppSettings["Identity.Email.Body"];
-                if (result != null) return result;
-                return "Account Confirmation";
-            }
-        }
-        public static string Notice
-        {
-            get
-            {
-                var result = ConfigurationManager.AppSettings["Identity.Email.Notice"];
-                if (result != null) return result;
-                return "Check your email and confirm your account.You must be confirmed before you can log in.";
-            }
-        }
-        public static string Cookie
-        {
-            get
-            {
-                var result = ConfigurationManager.AppSettings["Identity.Email.Cookie"];
-                if (result != null) return result;
-                return "SignUpConfirmEmail";
+                var result = ConfigurationManager.AppSettings["Identity.Email.Duplicate"];
+                if (!string.IsNullOrEmpty(result)) return result;
+                return "Email address already exists";
             }
         }
         public static string Valediction
@@ -55,7 +28,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Email.Valediction"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "The Asp.net Developer Team";
             }
         }

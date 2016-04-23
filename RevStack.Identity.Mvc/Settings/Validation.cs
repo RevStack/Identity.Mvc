@@ -10,7 +10,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.AllowOnlyAlphanumericUserNames"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -19,7 +19,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.RequireUniqueEmail"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return true;
             }
         }
@@ -28,8 +28,8 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.MinimumPasswordLength"];
-                if (result != null) return Convert.ToInt32(result);
-                return 8;
+                if (!string.IsNullOrEmpty(result)) return Convert.ToInt32(result);
+                return 6;
             }
         }
         public static bool RequireNonLetterOrDigit
@@ -37,7 +37,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.RequireNonLetterOrDigit"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -46,7 +46,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.RequireDigit"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -55,7 +55,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.RequireLowercase"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -64,7 +64,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.RequireUppercase"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -73,7 +73,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.UserLockoutEnabledByDefault"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -82,7 +82,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.DefaultAccountLockoutTimeSpan"];
-                if (result != null) return TimeSpan.FromMinutes(Convert.ToInt32(result));
+                if (!string.IsNullOrEmpty(result)) return TimeSpan.FromMinutes(Convert.ToInt32(result));
                 return TimeSpan.FromMinutes(30);
             }
         }
@@ -91,7 +91,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Validation.MaxFailedAccessAttemptsBeforeLockout"];
-                if (result != null) return Convert.ToInt32(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToInt32(result);
                 return 5;
             }
         }

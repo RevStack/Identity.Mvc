@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.ForgotPassword.Subject"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Reset Password";
             }
         }
@@ -21,7 +21,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.ForgotPassword.Body"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Request Password";
             }
         }

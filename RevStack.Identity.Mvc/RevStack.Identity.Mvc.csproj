@@ -138,7 +138,8 @@
     <Compile Include="Manager\RoleManager.cs" />
     <Compile Include="MessageService\EmailService.cs" />
     <Compile Include="MessageService\SmsService.cs" />
-    <Compile Include="Model\AuthenticationModel.cs" />
+    <Compile Include="Settings\ConfirmEmail.cs" />
+    <Compile Include="Settings\User.cs" />
     <Compile Include="Settings\Login.cs" />
     <Compile Include="Settings\XsrfKey.cs" />
     <Compile Include="Settings\Manage.cs" />

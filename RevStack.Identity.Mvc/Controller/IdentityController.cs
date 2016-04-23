@@ -143,9 +143,14 @@ namespace RevStack.Identity.Mvc
                 /* Send an email with this link */
                 var code = await userManager.GeneratePasswordResetTokenAsync(user.Id);
                 var subject = Settings.ForgotPassword.Subject;
-                var body = Settings.ForgotPassword.Body;
+                string body = "Dear " + model.Email + ":" + Settings.Email.NewLine + Settings.Email.NewLine;
+                body += Settings.ForgotPassword.Body;
+
                 var callbackUrl = Url.Action(RESET_PASSWORD_ACTION, IDENTITY_CONTROLLER, new { userId = user.Id, code }, Request.Url.Scheme);
-                body += Environment.NewLine + "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                body += Settings.Email.NewLine + "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                body += Settings.Email.NewLine + Settings.Email.NewLine;
+                body += Settings.Email.Valediction;
+
                 await userManager.SendEmailAsync(user.Id, subject, body);
                 return RedirectToAction(FORGOT_PASSWORD_CONFIRMATION_ACTION, IDENTITY_CONTROLLER);
             }
@@ -285,7 +290,7 @@ namespace RevStack.Identity.Mvc
             {
                 var userManager = _userManagerFactory();
                 var signInManager = new SignInManager<TUser, TKey>(userManager, _authenticationManager);
-                var result = await userManager.AddPasswordAsync(User.Identity.GetUserId<TKey>(), model.NewPassword);
+                var result = await userManager.AddPasswordAsync(User.Identity.GetUserId<TKey>(), model.Password);
                 if (result.Succeeded)
                 {
                     var user = await userManager.FindByIdAsync(User.Identity.GetUserId<TKey>());
@@ -870,13 +875,13 @@ namespace RevStack.Identity.Mvc
         [NonAction]
         protected ActionResult ConfirmEmailNotice_Get()
         {
-            if (Request.Cookies[Settings.Email.Cookie] == null)
+            if (Request.Cookies[Settings.ConfirmEmail.Cookie] == null)
             {
                 return View(ERROR_VIEW);
             }
             else
             {
-                Request.Cookies[Settings.Email.Cookie].Expires = DateTime.Now.AddDays(-1);
+                Request.Cookies[Settings.ConfirmEmail.Cookie].Expires = DateTime.Now.AddDays(-1);
                 return View(CONFIRM_EMAIL_NOTICE_VIEW);
             }
         }

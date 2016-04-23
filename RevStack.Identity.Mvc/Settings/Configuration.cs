@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Configuration.IsAzureHosted"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return false;
             }
         }
@@ -20,7 +20,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Configuration.Identifier"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Asp.net Identity";
             }
         }

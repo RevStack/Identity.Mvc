@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.Login.Persistence"];
-                if (result != null) return Convert.ToBoolean(result);
+                if (!string.IsNullOrEmpty(result)) return Convert.ToBoolean(result);
                 return true;
             }
         }

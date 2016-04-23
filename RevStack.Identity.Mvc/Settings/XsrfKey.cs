@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.XsrfKey"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "XsrfId";
             }
         }

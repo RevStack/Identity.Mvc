@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.TwoFactor.Success"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Your two factor authentication provider has been set.";
             }
         }
@@ -21,7 +21,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.TwoFactor.Enable"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Two factor authentication has been enabled.";
             }
         }
@@ -31,7 +31,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.TwoFactor.Disable"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Two factor authentication has been disabled.";
             }
         }

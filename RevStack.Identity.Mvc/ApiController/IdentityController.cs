@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Threading.Tasks;
+using System.Web.Http.ModelBinding;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity.Owin;
@@ -59,7 +60,7 @@ namespace RevStack.Identity.Mvc
         {
             get
             {
-                return Settings.Email.EnableConfirmation;
+                return Settings.ConfirmEmail.Enable;
             }
         }
 
@@ -106,13 +107,17 @@ namespace RevStack.Identity.Mvc
         [Route("UpdateProfile")]
         public virtual async Task<IHttpActionResult> UpdateProfile(TProfile model)
         {
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
             var userManager = _userManagerFactory();
             var id = User.Identity.GetUserId<TKey>();
             var user = await userManager.FindByIdAsync(id);
             user = await user.CopyPropertiesFromAsync(model);
             await userManager.UpdateAsync(user);
-            return Content(HttpStatusCode.OK, model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -123,10 +128,14 @@ namespace RevStack.Identity.Mvc
         [Route("SetPassword")]
         public virtual async Task<IHttpActionResult> SetPassword(SetPasswordModel model)
         {
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
             var userManager = _userManagerFactory();
             var signInManager = new SignInManager<TUser, TKey>(userManager, _authenticationManager);
-            var result = await userManager.AddPasswordAsync(User.Identity.GetUserId<TKey>(), model.NewPassword);
+            var result = await userManager.AddPasswordAsync(User.Identity.GetUserId<TKey>(), model.Password);
             if (result.Succeeded)
             {
                 var user = await userManager.FindByIdAsync(User.Identity.GetUserId<TKey>());
@@ -134,15 +143,11 @@ namespace RevStack.Identity.Mvc
                 {
                     await signInManager.SignInAsync(user, isPersistent: Settings.Login.Persistence, rememberBrowser: Settings.Login.Persistence);
                 }
-                return Content(HttpStatusCode.OK, model);
+                return Ok(model);
             }
             else
             {
-                var identityResponse = new IdentityResponse<SetPasswordModel>();
-                identityResponse.Entity = model;
-                identityResponse.Message = "Set Password Failed";
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
         }
 
@@ -152,34 +157,41 @@ namespace RevStack.Identity.Mvc
         /// <param name="model"></param>
         /// <returns></returns>
         [Route("ForgotPassword")]
+        [AllowAnonymous]
         public virtual async Task<IHttpActionResult> ForgotPassword(ForgotPasswordModel model)
         {
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
-            var identityResponse = new IdentityResponse<ForgotPasswordModel>();
-            var userManager = _userManagerFactory();
-            var user = await userManager.FindByNameAsync(model.Email);
-            if (user == null || !(await userManager.IsEmailConfirmedAsync(user.Id)))
+            if (!ModelState.IsValid)
             {
-                identityResponse.Message = "Failed to find an available user for this request";
-                identityResponse.Entity = model;
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
+            var identityResponse = new IdentityResponse();
+            var userManager = _userManagerFactory();
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return new ContentErrorResult(Request, HttpStatusCode.NotFound, Settings.User.NotFound);
             }
 
             /* Send an email with this link */
             var code = await userManager.GeneratePasswordResetTokenAsync(user.Id);
             var subject = Settings.ForgotPassword.Subject;
-            var body = Settings.ForgotPassword.Body;
+            string body = "Dear " + model.Email + ":";
+            body += Settings.Email.NewLine + Settings.Email.NewLine;
+            body += Settings.ForgotPassword.Body;
             var callbackUrl = Url.Link("Default", new { Controller = "Identity", Action = "ResetPassword", userId = user.Id, code });
-            body += Environment.NewLine + "Please reset your password by clicking <a href=\"" + callbackUrl +
+            body += Settings.Email.NewLine + "Please reset your password by clicking <a href=\"" + callbackUrl +
                     "\">here</a>";
 
+            body += Settings.Email.NewLine + Settings.Email.NewLine;
+            body += Settings.Email.Valediction;
+
             await userManager.SendEmailAsync(user.Id, subject, body);
+
             identityResponse.Message = "Redirect to Forgot Password Confirmation";
-            identityResponse.Entity = model;
-            identityResponse.ReturnUrl = Url.Link("Default", new { Controller = "Identity", Action = "ForgotPasswordConfirmation" });
+            identityResponse.Location = Url.Link("Default", new { Controller = "Identity", Action = "ForgotPasswordConfirmation" });
             identityResponse.StatusCode = HttpStatusCode.RedirectMethod;
-            return Content(HttpStatusCode.RedirectMethod, identityResponse);
+            return new ContentRedirectResult<IdentityResponse>(Request, identityResponse.Location, identityResponse);
         }
 
         /// <summary>
@@ -190,8 +202,11 @@ namespace RevStack.Identity.Mvc
         [Route("ChangePassword")]
         public virtual async Task<IHttpActionResult> ChangePassword(ChangePasswordModel model)
         {
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
-            var identityResponse = new IdentityResponse<ChangePasswordModel>();
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
             var userManager = _userManagerFactory();
             var id = User.Identity.GetUserId<TKey>();
             var result = await userManager.ChangePasswordAsync(id, model.OldPassword, model.NewPassword);
@@ -204,14 +219,11 @@ namespace RevStack.Identity.Mvc
                     _authenticationManager.SignIn(userIdentity);
                 }
 
-                return Content(HttpStatusCode.OK, model);
+                return Ok(model);
             }
             else
             {
-                identityResponse.Entity = model;
-                identityResponse.Message = "Change Password Failed";
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
         }
 
@@ -221,29 +233,30 @@ namespace RevStack.Identity.Mvc
         /// <param name="model"></param>
         /// <returns></returns>
         [Route("ResetPassword")]
+        [AllowAnonymous]
         public virtual async Task<IHttpActionResult> ResetPassword(ResetPasswordModel model)
         {
 
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
-            var identityResponse = new IdentityResponse<ResetPasswordModel>();
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
+           
             var userManager = _userManagerFactory();
             var user = await userManager.FindByNameAsync(model.Email);
             if (user == null)
             {
-                if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
-
+                return new ContentErrorResult(Request, HttpStatusCode.NotFound, Settings.User.NotFound);
             }
             var result = await userManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return Content(HttpStatusCode.OK, model);
+                return Ok(model);
             }
             else
             {
-                identityResponse.Entity = model;
-                identityResponse.Message = result.Errors.FirstOrDefault();
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
         }
 
@@ -255,8 +268,12 @@ namespace RevStack.Identity.Mvc
         [Route("AddPhoneNumber")]
         public virtual async Task<IHttpActionResult> AddPhoneNumber(AddPhoneNumberModel model)
         {
-            var identityResponse = new IdentityResponse<AddPhoneNumberModel>();
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
+            var identityResponse = new IdentityResponse();
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
             // Generate the token and send it
             var userManager = _userManagerFactory();
             var signInManager = new SignInManager<TUser, TKey>(userManager, _authenticationManager);
@@ -271,12 +288,10 @@ namespace RevStack.Identity.Mvc
                 await userManager.SmsService.SendAsync(message);
             }
 
-            identityResponse.Entity = new AddPhoneNumberModel { Number = model.Number };
             identityResponse.StatusCode = HttpStatusCode.RedirectMethod;
             identityResponse.Message = "Verify phone number";
-            identityResponse.ReturnUrl= Url.Link("Default", new { Controller = "Identity", Action = "VerifyPhoneNumber"});
-            return Content(HttpStatusCode.RedirectMethod, identityResponse);
-            
+            identityResponse.Location= Url.Link("Default", new { Controller = "Identity", Action = "VerifyPhoneNumber"});
+            return new ContentRedirectResult<IdentityResponse>(Request, identityResponse.Location, identityResponse);
         }
 
         /// <summary>
@@ -288,7 +303,11 @@ namespace RevStack.Identity.Mvc
         public virtual async Task<IHttpActionResult> VerifyPhoneNumber(VerifyPhoneNumberModel model)
         {
             var identityResponse = new IdentityResponse<VerifyPhoneNumberModel>();
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
             // Generate the token and send it
             var userManager = _userManagerFactory();
             var signInManager = new SignInManager<TUser, TKey>(userManager, _authenticationManager);
@@ -300,14 +319,11 @@ namespace RevStack.Identity.Mvc
                 {
                     await signInManager.SignInAsync(user, isPersistent: Settings.Login.Persistence, rememberBrowser: Settings.Login.Persistence);
                 }
-                return Content(HttpStatusCode.OK, model);
+                return Ok(model);
             }
             else
             {
-                identityResponse.Entity = model;
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                identityResponse.Message = "Unable to verify phone";
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
         }
 
@@ -325,17 +341,14 @@ namespace RevStack.Identity.Mvc
             var result = await userManager.SetPhoneNumberAsync(User.Identity.GetUserId<TKey>(), null);
             if (!result.Succeeded)
             {
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                identityResponse.Entity = model;
-                identityResponse.Message = "Remove phone number failed";
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
             var user = await userManager.FindByIdAsync(User.Identity.GetUserId<TKey>());
             if (user != null)
             {
                 await signInManager.SignInAsync(user, isPersistent: Settings.Login.Persistence, rememberBrowser: Settings.Login.Persistence);
             }
-            return Content(HttpStatusCode.OK, model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -346,22 +359,18 @@ namespace RevStack.Identity.Mvc
         [Route("ManageLogins")]
         public virtual async Task<IHttpActionResult> ManageLogins(ManageLoginsModel model)
         {
-            var identityResponse = new IdentityResponse<ManageLoginsModel>();
             var userManager = _userManagerFactory();
             var user = await userManager.FindByIdAsync(User.Identity.GetUserId<TKey>());
             if (user == null)
             {
-                identityResponse.Message = "No user found";
-                identityResponse.Entity = model;
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, HttpStatusCode.NotFound, Settings.User.NotFound);
             }
             var userLogins = await userManager.GetLoginsAsync(User.Identity.GetUserId<TKey>());
             var otherLogins = _authenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
 
             model.CurrentLogins = userLogins;
             model.OtherLogins = otherLogins;
-            return Content(HttpStatusCode.OK, model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -372,7 +381,6 @@ namespace RevStack.Identity.Mvc
         [Route("RemoveLogin")]
         public virtual async Task<IHttpActionResult> RemoveLogin(RemoveLoginModel model)
         {
-            var identityResponse = new IdentityResponse<RemoveLoginModel>();
             var userManager = _userManagerFactory();
             var signInManager = new SignInManager<TUser, TKey>(userManager, _authenticationManager);
             var result = await userManager.RemoveLoginAsync(User.Identity.GetUserId<TKey>(), new UserLoginInfo(model.LoginProvider, model.ProviderKey));
@@ -383,14 +391,11 @@ namespace RevStack.Identity.Mvc
                 {
                     await signInManager.SignInAsync(user, isPersistent: Settings.Login.Persistence, rememberBrowser: Settings.Login.Persistence);
                 }
-                return Content(HttpStatusCode.OK, model);
+                return Ok(model);
             }
             else
             {
-                identityResponse.Entity = model;
-                identityResponse.Message = Settings.Manage.Error;
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
             
         }
@@ -410,7 +415,7 @@ namespace RevStack.Identity.Mvc
             {
                 await signInManager.SignInAsync(user, isPersistent: Settings.Login.Persistence, rememberBrowser: Settings.Login.Persistence);
             }
-            return Content(HttpStatusCode.OK, true);
+            return Ok();
         }
 
         /// <summary>
@@ -428,29 +433,33 @@ namespace RevStack.Identity.Mvc
             {
                 await signInManager.SignInAsync(user, isPersistent: Settings.Login.Persistence, rememberBrowser: Settings.Login.Persistence);
             }
-            return Content(HttpStatusCode.OK, true);
+            return Ok();
         }
 
-        [Route("AuthenticationModel")]
+        [Route("IdentityUser")]
         [AllowAnonymous]
-        public virtual async Task<IHttpActionResult> Authentication()
+        public virtual async Task<IHttpActionResult> IdentityUser()
         {
-            var model = new AuthenticationModel
+            var model = new IdentityUserModel
             {
-                Id=Guid.NewGuid().ToString(),
-                SignedIn=false,
+                Id=null,
+                Authenticated=false,
                 Email=null
             };
+
             if (User.Identity.IsAuthenticated)
             {
                 var userName = User.Identity.GetUserName();
                 var userManager = _userManagerFactory();
-                var user = await userManager.FindByEmailAsync(userName);
-                model.SignedIn = true;
+                var user = await userManager.FindByNameAsync(userName);
+                model.Id = user.Id.ToString();
+                model.Authenticated = true;
                 model.Email = user.Email;
+                model.Name = user.UserName;
+                model.Roles = userManager.GetRoles(user.Id).ToList();
             }
 
-            return Content(HttpStatusCode.OK, model);
+            return Ok(model);
         }
 
         /// <summary>
@@ -497,13 +506,11 @@ namespace RevStack.Identity.Mvc
         /// <returns></returns>
         protected async Task<IHttpActionResult> SignIn_Post(SignInModel model)
         {
-            var identityResponse = new IdentityResponse<SignInModel>();
+            var identityResponse = new IdentityResponse();
             if (!ModelState.IsValid)
             {
-                identityResponse.Message = "Invalid Model State";
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                identityResponse.Entity = model;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                var modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
             }
 
             var userManager = _userManagerFactory();
@@ -516,24 +523,17 @@ namespace RevStack.Identity.Mvc
             {
                 case SignInStatus.Success:
                     var currentUser = userManager.FindByEmail(model.Email);
-                    return Content(HttpStatusCode.OK, model);
+                    return Ok(model);
                 case SignInStatus.LockedOut:
-                    identityResponse.Message = "The account is currently locked";
-                    identityResponse.StatusCode = HttpStatusCode.Forbidden;
-                    identityResponse.Entity = model;
-                    return Content(HttpStatusCode.Forbidden, identityResponse);
+                    return new ContentErrorResult(Request, HttpStatusCode.Forbidden, Settings.User.Locked);
                 case SignInStatus.RequiresVerification:
                     identityResponse.Message = "The acount requires verification";
                     identityResponse.StatusCode = HttpStatusCode.RedirectMethod;
-                    identityResponse.Entity = model;
-                    identityResponse.ReturnUrl = Url.Link("Default", new { Controller = "Identity", Action = "SendCode" });
-                    return Content(HttpStatusCode.RedirectMethod, identityResponse);
+                    identityResponse.Location = Url.Link("Default", new { Controller = "Identity", Action = "SendCode" });
+                    return new ContentRedirectResult<IdentityResponse>(Request, identityResponse.Location, identityResponse);
                 case SignInStatus.Failure:
                 default:
-                    identityResponse.Message = "Invalid Login Account";
-                    identityResponse.StatusCode = HttpStatusCode.Unauthorized;
-                    identityResponse.Entity = model;
-                    return Content(HttpStatusCode.Forbidden, identityResponse);
+                    return new ContentErrorResult(Request, HttpStatusCode.Forbidden, Settings.User.InvalidLogin);
             }
         }
 
@@ -544,10 +544,15 @@ namespace RevStack.Identity.Mvc
         /// <returns></returns>
         protected async Task<IHttpActionResult> SignUp_Post(SignUpModel model)
         {
-            if (!ModelState.IsValid) return Content(HttpStatusCode.BadRequest, model);
+            IEnumerable<ModelError> modelErrors;
+            if (!ModelState.IsValid)
+            {
+                modelErrors = ModelState.Values.SelectMany(x => x.Errors);
+                return new ModelErrorResult(Request, modelErrors);
+            }
 
             //init an identityReponse
-            var identityResponse = new IdentityResponse<SignUpModel>();
+            var identityResponse = new IdentityResponse();
 
             //instances from the respective factories
             var userManager = _userManagerFactory();
@@ -564,10 +569,7 @@ namespace RevStack.Identity.Mvc
                 var existingUserByName = await userManager.FindByNameAsync(newUser.UserName);
                 if (existingUserByName != null)
                 {
-                    identityResponse.Message = "User Name Already Exists";
-                    identityResponse.Entity = model;
-                    identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                    return Content(HttpStatusCode.BadRequest, identityResponse);
+                    return new ContentErrorResult(Request,Settings.User.Duplicate);
                 }
             }
             else
@@ -579,10 +581,7 @@ namespace RevStack.Identity.Mvc
                 //enforce unique username
                 if (existingUserByName != null)
                 {
-                    identityResponse.Message = "Username already exists";
-                    identityResponse.Entity = model;
-                    identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                    return Content(HttpStatusCode.BadRequest, identityResponse);
+                    return new ContentErrorResult(Request, Settings.User.Duplicate);
                 }
                 //if signup by username & RequireUniqueEmail set, force unique email
                 if (Settings.Validation.RequireUniqueEmail)
@@ -590,10 +589,7 @@ namespace RevStack.Identity.Mvc
                     var existingUserByEmail = await userManager.FindByEmailAsync(model.Email);
                     if (existingUserByEmail != null)
                     {
-                        identityResponse.Message = "Submitted email address already exists";
-                        identityResponse.Entity = model;
-                        identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                        return Content(HttpStatusCode.BadRequest, identityResponse);
+                        return new ContentErrorResult(Request, Settings.Email.Duplicate);
                     }
                 }
             }
@@ -601,10 +597,7 @@ namespace RevStack.Identity.Mvc
             var result = await userManager.CreateAsync(newUser, model.Password);
             if (!result.Succeeded)
             {
-                identityResponse.Message = result.Errors.FirstOrDefault();
-                identityResponse.Entity = model;
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
+                return new ContentErrorResult(Request, result.Errors.FirstOrDefault());
             }
             bool assignRolesStatus = AssignRolesToUser(model.Roles, newUser, userManager, roleManager);
 
@@ -612,32 +605,36 @@ namespace RevStack.Identity.Mvc
             if (!assignRolesStatus)
             {
                 userManager.Delete(newUser);
-                identityResponse.Message = "Failed to create user because role assignment failed";
-                identityResponse.Entity = model;
-                identityResponse.StatusCode = HttpStatusCode.BadRequest;
-                return Content(HttpStatusCode.BadRequest, identityResponse);
-
+                return new ContentErrorResult(Request, "Failed to create user because role assignment failed");
             }
+
             if (ConfirmEmail)
             {
-                var subject = Settings.Email.Subject;
-                var body = Settings.Email.Body;
+                var subject = Settings.ConfirmEmail.Subject;
+                string body = "Dear " + model.Email + ":";
+                body += Settings.Email.NewLine + Settings.Email.NewLine;
+                body += Settings.ConfirmEmail.Body;
+
                 var code = await userManager.GenerateEmailConfirmationTokenAsync(newUser.Id);
                 var callbackUrl = Url.Link("Default", new { Controller = "Identity", Action = "ConfirmEmail", userId = newUser.Id, code });
-                body += Environment.NewLine + "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>";
+                body += Settings.Email.NewLine + "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>";
+
+                body += Settings.Email.NewLine + Settings.Email.NewLine;
+                body += Settings.Email.Valediction;
+
                 await userManager.SendEmailAsync(newUser.Id, subject, body);
+
                 identityResponse.Message = "Email must be confirmed before sign-in";
-                identityResponse.Entity = model;
-                identityResponse.ReturnUrl = Url.Link("Default", new { Controller = "Identity", Action = "ConfirmEmailNotice" });
+                identityResponse.Location = Url.Link("Default", new { Controller = "Identity", Action = "ConfirmEmailNotice" });
                 identityResponse.StatusCode = HttpStatusCode.RedirectMethod;
-                return Content(HttpStatusCode.RedirectMethod, identityResponse);
+                return new ContentRedirectResult<IdentityResponse>(Request, identityResponse.Location, identityResponse);
             }
             else
             {
                 //create the identity and sign-in
                 var userIdentity = await userManager.CreateIdentityAsync(newUser, AuthenticationType);
                 _authenticationManager.SignIn(userIdentity);
-                return Content(HttpStatusCode.OK, model);
+                return Ok(model);
             }
         }
         #endregion

@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System.Web.Mvc;
 using RevStack.Mvc;
+using RevStack.Pattern;
 
 namespace RevStack.Identity.Mvc
 {
@@ -36,15 +37,6 @@ namespace RevStack.Identity.Mvc
         }
     }
 
-    public class IdentityUserModel
-    {
-        public string Id { get; set; }
-        public bool Authenticated { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public List<string> Roles { get; set; }
-    }
-
     public class ManageLoginsModel
     {
         public IList<UserLoginInfo> CurrentLogins { get; set; }
@@ -65,31 +57,30 @@ namespace RevStack.Identity.Mvc
     public class SetPasswordModel
     {
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
-        [DataType(DataType.Password)]
-        [Display(Name = "New password")]
-        public string NewPassword { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
-        [System.ComponentModel.DataAnnotations.Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-    }
-
-    public class ResetPasswordModel
-    {
-        [Required]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
         [DataType(DataType.Password)]
         [Display(Name = "New password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
-        [System.ComponentModel.DataAnnotations.Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The new password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+    }
+
+    public class ResetPasswordModel
+    {
+       
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "New password")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm new password")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
@@ -103,7 +94,6 @@ namespace RevStack.Identity.Mvc
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
         [DataType(DataType.Password)]
         [Display(Name = "New password")]
         public string NewPassword { get; set; }
@@ -220,5 +210,14 @@ namespace RevStack.Identity.Mvc
             EnableTwoFactor = false;
             EnableOAuth = false;
         }
+    }
+
+    public class IdentityUserModel : IEntity<string>
+    {
+        public string Id { get; set; }
+        public bool Authenticated { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

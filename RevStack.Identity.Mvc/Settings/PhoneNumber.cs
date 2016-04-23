@@ -11,7 +11,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.PhoneNumber.AddSuccess"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Your phone number has been added.";
             }
         }
@@ -21,7 +21,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.PhoneNumber.RemoveSuccess"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Your phone number has been removed.";
             }
         }
@@ -31,7 +31,7 @@ namespace RevStack.Identity.Mvc.Settings
             get
             {
                 var result = ConfigurationManager.AppSettings["Identity.PhoneNumber.Verify"];
-                if (result != null) return result;
+                if (!string.IsNullOrEmpty(result)) return result;
                 return "Please verify your phone number.";
             }
         }
