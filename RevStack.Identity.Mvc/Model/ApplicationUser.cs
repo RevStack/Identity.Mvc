@@ -11,6 +11,7 @@ namespace RevStack.Identity.Mvc
         public string State { get; set; }
         public string Street { get; set; }
         public string ZipCode { get; set; }
+        public DateTime SignUpDate { get; set; }
 
         public ApplicationUser() : base() { }
        

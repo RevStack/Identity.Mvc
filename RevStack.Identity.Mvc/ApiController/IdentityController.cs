@@ -558,6 +558,7 @@ namespace RevStack.Identity.Mvc
             var userManager = _userManagerFactory();
             var roleManager = _roleManagerFactory();
             var newUser = _applicationUserFactory();
+            newUser.SignUpDate = DateTime.Now;
 
             //if UserName is null, email is used as the username
             if (model.UserName == null)
