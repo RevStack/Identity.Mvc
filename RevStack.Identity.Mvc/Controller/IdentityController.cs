@@ -222,6 +222,12 @@ namespace RevStack.Identity.Mvc
             
         }
 
+        [AllowAnonymous]
+        public virtual ActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
         /// <summary>
         ///  GET ChangePassword
         /// </summary>
