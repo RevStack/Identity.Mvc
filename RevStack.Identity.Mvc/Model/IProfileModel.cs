@@ -13,5 +13,6 @@ namespace RevStack.Identity.Mvc
         string State { get; set; }
         string ZipCode { get; set; }
         string Phone { get; set; }
+        DateTime SignUpDate { get; set; }
     }
 }

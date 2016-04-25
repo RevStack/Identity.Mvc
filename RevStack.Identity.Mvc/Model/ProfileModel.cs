@@ -18,6 +18,7 @@ namespace RevStack.Identity.Mvc
         public string State { get; set; }
         public string ZipCode { get; set; }
         public string Phone { get; set; }
+        public DateTime SignUpDate { get; set; }
         public List<string> Roles { get; set; }
 
         public ProfileModel()

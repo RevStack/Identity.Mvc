@@ -115,7 +115,21 @@ namespace RevStack.Identity.Mvc
             var userManager = _userManagerFactory();
             var id = User.Identity.GetUserId<TKey>();
             var user = await userManager.FindByIdAsync(id);
+
+            //ensure the following 3 properties are not updateable
+            DateTime signUpDate = user.SignUpDate;
+            string userName = user.UserName;
+            string email = user.Email;
+
+            //map profile props of viewmodel to user
             user = await user.CopyPropertiesFromAsync(model);
+
+            //re-assign old values back
+            user.UserName = userName;
+            user.SignUpDate = signUpDate;
+            user.Email = email;
+
+            //update
             await userManager.UpdateAsync(user);
             return Ok(model);
         }
