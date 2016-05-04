@@ -12,7 +12,7 @@ namespace RevStack.Identity.Mvc
         string City { get; set; }
         string State { get; set; }
         string ZipCode { get; set; }
-        string Phone { get; set; }
+        string PhoneNumber { get; set; }
         DateTime SignUpDate { get; set; }
     }
 }
