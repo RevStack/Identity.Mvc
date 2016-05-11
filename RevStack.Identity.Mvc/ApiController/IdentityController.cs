@@ -510,6 +510,9 @@ namespace RevStack.Identity.Mvc
 
             return status;
         }
+
+        public virtual void OnSignUpSuccess(SignUpModel model) {}
+
         #endregion
 
         #region "Protected"
@@ -649,6 +652,7 @@ namespace RevStack.Identity.Mvc
                 //create the identity and sign-in
                 var userIdentity = await userManager.CreateIdentityAsync(newUser, AuthenticationType);
                 _authenticationManager.SignIn(userIdentity);
+                OnSignUpSuccess(model);
                 return Ok(model);
             }
         }
