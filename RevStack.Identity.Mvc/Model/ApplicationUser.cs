@@ -3,7 +3,7 @@ using RevStack.Identity;
 
 namespace RevStack.Identity.Mvc
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationBaseUser : IdentityUser
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -12,7 +12,7 @@ namespace RevStack.Identity.Mvc
         public string Street { get; set; }
         public string ZipCode { get; set; }
         
-        public ApplicationUser() : base() { }
+        public ApplicationBaseUser() : base() { }
        
     }
 }

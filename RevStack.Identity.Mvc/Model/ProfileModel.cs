@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RevStack.Identity.Mvc
 {
-    public class ProfileModel : IProfileModel<string>
+    public class ProfileBaseModel<TKey> : IProfileModel<TKey>
     {
-        public string Id { get; set; }
+        public TKey Id { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -21,7 +21,7 @@ namespace RevStack.Identity.Mvc
         public DateTime SignUpDate { get; set; }
         public List<string> Roles { get; set; }
 
-        public ProfileModel()
+        public ProfileBaseModel()
         {
             Roles = new List<string>();
         }
