@@ -78,9 +78,8 @@
       <HintPath>..\packages\RevStack.Identity.1.0.0\lib\net46\RevStack.Identity.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RevStack.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RevStack.Mvc.1.0.0\lib\net46\RevStack.Mvc.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="RevStack.Mvc">
+      <HintPath>Z:\Users\admin\Documents\Development\mono\RevStack\updated\RevStack.Mvc\bin\Release\RevStack.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="RevStack.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RevStack.Net.1.0.0\lib\net46\RevStack.Net.dll</HintPath>

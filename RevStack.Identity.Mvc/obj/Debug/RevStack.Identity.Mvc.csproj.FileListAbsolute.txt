@@ -92,10 +92,7 @@
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\Microsoft.Owin.Security.Cookies.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\Microsoft.Owin.Security.OAuth.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\Newtonsoft.Json.xml
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\RevStack.Identity.pdb
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\RevStack.Mvc.pdb
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\RevStack.Net.pdb
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\RevStack.Pattern.pdb
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\System.Net.Http.Formatting.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\System.Web.Helpers.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\System.Web.Http.xml
