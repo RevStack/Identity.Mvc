@@ -5,6 +5,6 @@ namespace RevStack.Identity.Mvc
 {
     public class ApplicationUserRole : IdentityUserRole
     {
-        ApplicationUserRole() : base() { }
+        public ApplicationUserRole() : base() { }
     }
 }

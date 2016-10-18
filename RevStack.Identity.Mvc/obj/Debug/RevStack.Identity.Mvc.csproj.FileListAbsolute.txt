@@ -105,10 +105,7 @@
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\System.Web.WebPages.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\System.Web.WebPages.Deployment.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\System.Web.WebPages.Razor.xml
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\RevStack.Cryptography.pdb
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\RevStack.Cryptography.xml
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\MiscUtil.pdb
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Debug\MiscUtil.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\obj\Debug\RevStack.Identity.Mvc.csprojResolveAssemblyReference.cache
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\obj\Debug\RevStack.Identity.Mvc.dll
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\obj\Debug\RevStack.Identity.Mvc.pdb

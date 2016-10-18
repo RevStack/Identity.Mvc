@@ -47,10 +47,7 @@
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\System.Web.WebPages.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\System.Web.WebPages.Deployment.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\System.Web.WebPages.Razor.xml
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\RevStack.Cryptography.pdb
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\RevStack.Cryptography.xml
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\MiscUtil.pdb
-\\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\bin\Release\MiscUtil.xml
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\obj\Release\RevStack.Identity.Mvc.dll
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\obj\Release\RevStack.Identity.Mvc.pdb
 \\Mac\Home\Documents\Development\mono\RevStack\updated\RevStack.Identity.Mvc\RevStack.Identity.Mvc\obj\Release\RevStack.Identity.Mvc.csprojResolveAssemblyReference.cache
